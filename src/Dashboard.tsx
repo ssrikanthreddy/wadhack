@@ -194,7 +194,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useInView } from "react-intersection-observer";
 
-
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
 const initialInvoices = [
@@ -204,7 +203,6 @@ const initialInvoices = [
     totalAmount: 250.0,
     paymentMethod: "Credit Card",
   },
-  // ...other initial invoices
   {
     invoice: "INV002",
     paymentStatus: "Pending",
@@ -217,30 +215,6 @@ const initialInvoices = [
     totalAmount: 350.0,
     paymentMethod: "Bank Transfer",
   },
-  // {
-  //   invoice: "INV004",
-  //   paymentStatus: "Paid",
-  //   totalAmount: 450.0,
-  //   paymentMethod: "Credit Card",
-  // },
-  // {
-  //   invoice: "INV005",
-  //   paymentStatus: "Paid",
-  //   totalAmount: 550.0,
-  //   paymentMethod: "PayPal",
-  // },
-  // {
-  //   invoice: "INV006",
-  //   paymentStatus: "Pending",
-  //   totalAmount: 200.0,
-  //   paymentMethod: "Bank Transfer",
-  // },
-  // {
-  //   invoice: "INV007",
-  //   paymentStatus: "Unpaid",
-  //   totalAmount: 300.0,
-  //   paymentMethod: "Credit Card",
-  // },
 ];
 
 function Dashboard() {
@@ -248,19 +222,20 @@ function Dashboard() {
   const [newInvoice, setNewInvoice] = useState({
     invoice: "",
     paymentStatus: "",
-    totalAmount: 0 as number,
+    totalAmount: 0,
     paymentMethod: "",
   });
+  const [showPopup, setShowPopup] = useState(false);
   const { ref: pieRef, inView: pieInView } = useInView({ triggerOnce: true });
   const { ref: barRef, inView: barInView } = useInView({ triggerOnce: true });
-  
-  const handleAmountChange = (index: number, delta: number) => {
+
+  const handleAmountChange = (index, delta) => {
     const updatedInvoices = [...invoices];
     updatedInvoices[index].totalAmount += delta;
     setInvoices(updatedInvoices);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewInvoice((prev) => ({ ...prev, [name]: name === "totalAmount" ? parseFloat(value) : value }));
   };
@@ -274,18 +249,17 @@ function Dashboard() {
     ) {
       setInvoices((prev) => [...prev, newInvoice]);
       setNewInvoice({ invoice: "", paymentStatus: "", totalAmount: 0, paymentMethod: "" });
+      setShowPopup(true);
+      setTimeout(() => setShowPopup(false), 3000); // Hide popup after 3 seconds
     }
   };
-  const deleteInvoice = (index: number) => {
+
+  const deleteInvoice = (index) => {
     const updatedInvoices = invoices.filter((_, i) => i !== index);
     setInvoices(updatedInvoices);
   };
-  
 
-  const totalAmount = invoices.reduce(
-    (total, invoice) => total + invoice.totalAmount,
-    0
-  );
+  const totalAmount = invoices.reduce((total, invoice) => total + invoice.totalAmount, 0);
 
   const paymentMethodData = {
     labels: ["Credit Card", "PayPal", "Bank Transfer"],
@@ -311,10 +285,6 @@ function Dashboard() {
         backgroundColor: ["#4CAF50", "#FFC107", "#F44336"],
       },
     ],
-  };
-
-  const handleNewInvoiceChange = (field: string, value: any) => {
-    setNewInvoice((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -353,9 +323,14 @@ function Dashboard() {
                       <Button variant="outline" className="mx-2" onClick={() => handleAmountChange(index, 10)}>
                         +
                       </Button>
-                      <Button variant="outline" onClick={() => deleteInvoice(index)} className="absolute top-1/2 right-2 transform -translate-y-1/2 hidden group-hover:block" title="Delete Invoice">
+                      <Button
+                        variant="outline"
+                        onClick={() => deleteInvoice(index)}
+                        className="absolute top-1/2 right-2 transform -translate-y-1/2 hidden group-hover:block"
+                        title="Delete Invoice"
+                      >
                         <FontAwesomeIcon icon="trash" />
-                    </Button>
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -426,6 +401,20 @@ function Dashboard() {
           </div>
         </div>
       </div>
+      {showPopup && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-slate-900 p-6 rounded-lg shadow-lg">
+            <h2 className="text-2xl font-bold text-center mb-4 text-green-600">Success</h2>
+            <p className="text-center text-green-600">Invoice added successfully!</p>
+            <Button
+              className="mt-4 mx-auto block"
+              onClick={() => setShowPopup(false)}
+            >
+              Close
+            </Button>
+          </div>
+        </div>
+      )}
       <style>{`
         .custom-scrollbar {
           scrollbar-width: thin;
@@ -450,4 +439,5 @@ function Dashboard() {
 }
 
 export default Dashboard;
+
 
