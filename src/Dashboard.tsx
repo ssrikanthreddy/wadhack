@@ -1,172 +1,3 @@
-// import React, { useState } from "react";
-// import {
-//   Table,
-//   TableBody,
-//   TableCaption,
-//   TableCell,
-//   TableFooter,
-//   TableHead,
-//   TableHeader,
-//   TableRow,
-// } from "./components/ui/table";
-// import { ThemeProvider } from "./components/theme-provider";
-// import GlassNavbar from "./components/glass-navbar";
-// import { Button } from "./components/ui/button";
-// import { Pie, Bar } from 'react-chartjs-2';
-// import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js';
-// import { useInView } from 'react-intersection-observer';
-
-// ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
-
-// const initialInvoices = [
-//   {
-//     invoice: "INV001",
-//     paymentStatus: "Paid",
-//     totalAmount: 250.0,
-//     paymentMethod: "Credit Card",
-//   },
-  // {
-  //   invoice: "INV002",
-  //   paymentStatus: "Pending",
-  //   totalAmount: 150.0,
-  //   paymentMethod: "PayPal",
-  // },
-  // {
-  //   invoice: "INV003",
-  //   paymentStatus: "Unpaid",
-  //   totalAmount: 350.0,
-  //   paymentMethod: "Bank Transfer",
-  // },
-  // {
-  //   invoice: "INV004",
-  //   paymentStatus: "Paid",
-  //   totalAmount: 450.0,
-  //   paymentMethod: "Credit Card",
-  // },
-  // {
-  //   invoice: "INV005",
-  //   paymentStatus: "Paid",
-  //   totalAmount: 550.0,
-  //   paymentMethod: "PayPal",
-  // },
-  // {
-  //   invoice: "INV006",
-  //   paymentStatus: "Pending",
-  //   totalAmount: 200.0,
-  //   paymentMethod: "Bank Transfer",
-  // },
-  // {
-  //   invoice: "INV007",
-  //   paymentStatus: "Unpaid",
-  //   totalAmount: 300.0,
-  //   paymentMethod: "Credit Card",
-  // },
-// ];
-
-// function Dashboard() {
-//   const [invoices, setInvoices] = useState(initialInvoices);
-//   const { ref: pieRef, inView: pieInView } = useInView({ triggerOnce: true });
-//   const { ref: barRef, inView: barInView } = useInView({ triggerOnce: true });
-
-//   const handleAmountChange = (index: number, delta: number) => {
-//     const newInvoices = [...invoices];
-//     newInvoices[index].totalAmount += delta;
-//     setInvoices(newInvoices);
-//   };
-
-//   const totalAmount = invoices.reduce(
-//     (total, invoice) => total + invoice.totalAmount,
-//     0
-//   );
-
-//   const paymentMethodData = {
-//     labels: ['Credit Card', 'PayPal', 'Bank Transfer'],
-//     datasets: [
-//       {
-//         label: 'Payment Methods',
-//         data: ['Credit Card', 'PayPal', 'Bank Transfer'].map(method => 
-//           invoices.filter(invoice => invoice.paymentMethod === method).length
-//         ),
-//         backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-//         hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-//       },
-//     ],
-//   };
-
-//   const paymentStatusData = {
-//     labels: ['Paid', 'Pending', 'Unpaid'],
-//     datasets: [
-//       {
-//         label: 'Payment Status',
-//         data: ['Paid', 'Pending', 'Unpaid'].map(status => 
-//           invoices.filter(invoice => invoice.paymentStatus === status).length
-//         ),
-//         backgroundColor: ['#4CAF50', '#FFC107', '#F44336'],
-//         hoverBackgroundColor: ['#4CAF50', '#FFC107', '#F44336'],
-//       },
-//     ],
-//   };
-
-//   return (
-//     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-//       <div>
-//       <nav>
-//         <GlassNavbar />
-//       </nav>
-//       </div>
-//       <div className="flex flex-row mt-[20px] w-full justify-between">
-//         <div className="w-[800px] pr-4">
-//           <Table className="w-full border-2 border-slate-600 rounded-[399px]">
-//             <TableCaption className="caption-top font-bold pb-4 text-lg">A list of your recent invoices.</TableCaption>
-//             <TableHeader>
-//               <TableRow>
-//                 <TableHead className="w-[100px]">Invoice</TableHead>
-//                 <TableHead>Status</TableHead>
-//                 <TableHead>Method</TableHead>
-//                 <TableHead className="text-right">Amount</TableHead>
-//               </TableRow>
-//             </TableHeader>
-//             <TableBody>
-//               {invoices.map((invoice, index) => (
-//                 <TableRow key={invoice.invoice}>
-//                   <TableCell className="font-medium">{invoice.invoice}</TableCell>
-//                   <TableCell>{invoice.paymentStatus}</TableCell>
-//                   <TableCell>{invoice.paymentMethod}</TableCell>
-//                   <TableCell className="text-right">
-//                     <Button variant='outline' className="mx-2" onClick={() => handleAmountChange(index, -10)} >-</Button>
-//                     {` $${invoice.totalAmount.toFixed(2)} `}
-//                     <Button variant='outline' className="mx-2" onClick={() => handleAmountChange(index, 10)} >+</Button>
-//                   </TableCell>
-//                 </TableRow>
-//               ))}
-//             </TableBody>
-//             <TableFooter>
-//               <TableRow>
-//                 <TableCell colSpan={3}>Total</TableCell>
-//                 <TableCell className="text-right">
-//                   ${totalAmount.toFixed(2)}
-//                 </TableCell>
-//               </TableRow>
-//             </TableFooter>
-//           </Table>
-//         </div>
-//         <div className="w-[300px] flex flex-col justify-center pl-5">
-//           <div className="w-[250px] mb-8" ref={pieRef}>
-//             <h2 className="text-center text-xl">Payment Methods</h2>
-//             {pieInView && <Pie data={paymentMethodData} />}
-//           </div>
-//           <div className="w-[250px]" ref={barRef}>
-//             <h2 className="text-center text-xl mb-4">Payment Status</h2>
-//             {barInView && <Bar data={paymentStatusData} />}
-//           </div>
-//         </div>
-//       </div>
-//     </ThemeProvider>
-//   );
-// }
-
-// export default Dashboard;
-
 import React, { useState } from "react";
 import {
   Table,
@@ -204,17 +35,42 @@ const initialInvoices = [
     paymentMethod: "Credit Card",
   },
   {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: 150.0,
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: 350.0,
-    paymentMethod: "Bank Transfer",
-  },
+      invoice: "INV002",
+      paymentStatus: "Pending",
+      totalAmount: 150.0,
+      paymentMethod: "PayPal",
+    },
+    {
+      invoice: "INV003",
+      paymentStatus: "Unpaid",
+      totalAmount: 350.0,
+      paymentMethod: "Bank Transfer",
+    },
+    // {
+    //   invoice: "INV004",
+    //   paymentStatus: "Paid",
+    //   totalAmount: 450.0,
+    //   paymentMethod: "Credit Card",
+    // },
+    // {
+    //   invoice: "INV005",
+    //   paymentStatus: "Paid",
+    //   totalAmount: 550.0,
+    //   paymentMethod: "PayPal",
+    // },
+    // {
+    //   invoice: "INV006",
+    //   paymentStatus: "Pending",
+    //   totalAmount: 200.0,
+    //   paymentMethod: "Bank Transfer",
+    // },
+    {
+      invoice: "INV007",
+      paymentStatus: "Unpaid",
+      totalAmount: 300.0,
+      paymentMethod: "Credit Card",
+    },
+
 ];
 
 function Dashboard() {
@@ -228,6 +84,7 @@ function Dashboard() {
   const [showPopup, setShowPopup] = useState(false);
   const { ref: pieRef, inView: pieInView } = useInView({ triggerOnce: true });
   const { ref: barRef, inView: barInView } = useInView({ triggerOnce: true });
+  const { ref: amountBarRef, inView: amountBarInView } = useInView({ triggerOnce: true });
 
   const handleAmountChange = (index, delta) => {
     const updatedInvoices = [...invoices];
@@ -273,6 +130,20 @@ function Dashboard() {
       },
     ],
   };
+  const amountByMethodData = {
+    labels: ["Credit Card", "PayPal", "Bank Transfer"],
+    datasets: [
+      {
+        label: "Amount by Payment Method",
+        data: ["Credit Card", "PayPal", "Bank Transfer"].map((method) =>
+          invoices
+            .filter((invoice) => invoice.paymentMethod === method)
+            .reduce((total, invoice) => total + invoice.totalAmount, 0)
+        ),
+        backgroundColor: ["#8E44AD", "#3498DB", "#27AE60"],
+      },
+    ],
+  };
 
   const paymentStatusData = {
     labels: ["Paid", "Pending", "Unpaid"],
@@ -295,7 +166,7 @@ function Dashboard() {
         </nav>
       </div>
       <div className="flex flex-row mt-[20px] w-full justify-between">
-        <div className="w-[800px] pr-4">
+        <div className="w-[800px] mr-[100px]">
           <div className="overflow-auto max-h-[400px] custom-scrollbar">
             <Table className="w-full border-2 border-slate-600 rounded-[399px]">
               <TableCaption className="caption-top font-bold pb-4 text-lg">
@@ -390,15 +261,22 @@ function Dashboard() {
             </Button>
           </div>
         </div>
-        <div className="w-[300px] flex flex-col justify-center pl-5">
+        <div className="w-[350px] flex flex-col justify-center">
           <div className="w-[250px] mb-8" ref={pieRef}>
             <h2 className="text-center text-xl">Payment Methods</h2>
-            {pieInView && <Pie data={paymentMethodData} />}
+            {pieInView && <Pie data={paymentMethodData} height={220}/>}
           </div>
-          <div className="w-[250px]" ref={barRef}>
-            <h2 className="text-center text-xl mb-4">Payment Status</h2>
-            {barInView && <Bar data={paymentStatusData} />}
+          <div className="flex flex-row justify-center">
+            <div className="w-[250px]" ref={barRef}>
+              <h2 className="text-center text-xl mb-4">Payment Status</h2>
+              {barInView && <Bar data={paymentStatusData} height={250} />}
+            </div>
+            <div className="w-[250px]" ref={amountBarRef}>
+              <h2 className="text-center text-xl mb-4">Amount by Method</h2>
+              {amountBarInView && <Bar data={amountByMethodData} height={250} />}
+            </div>
           </div>
+
         </div>
       </div>
       {showPopup && (
