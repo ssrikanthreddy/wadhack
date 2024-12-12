@@ -11,8 +11,9 @@ import {
 } from "./components/ui/card";
 import { Input } from "./components/ui/input";
 import { Label } from "./components/ui/label";
-
 import GlassNavbar from "./components/glass-navbar";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [username, setUsername] = React.useState("");
@@ -25,9 +26,11 @@ function App() {
 
   const handleLogin = () => {
     if (username === "admin" && password === "admin") {
-      window.location.href = "/dashboard";
+      toast.success("Login successful!", {
+        onClose: () => (window.location.href = "/dashboard"),
+      });
     } else {
-      alert("Invalid username or password");
+      toast.error("Invalid username or password");
     }
   };
 
@@ -80,8 +83,7 @@ function App() {
           <Button onClick={handleLogin}>Log in</Button>
         </CardFooter>
       </Card>
-
-      
+      <ToastContainer />
     </ThemeProvider>
   );
 }
