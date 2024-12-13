@@ -266,7 +266,7 @@ function Dashboard() {
             <h2 className="text-center text-xl">Payment Methods</h2>
             {pieInView && <Pie data={paymentMethodData} height={220}/>}
           </div>
-          <div className="flex flex-row justify-center">
+          {/* <div className="flex flex-row justify-center">
             <div className="w-[250px]" ref={barRef}>
               <h2 className="text-center text-xl mb-4">Payment Status</h2>
               {barInView && <Bar data={paymentStatusData} height={250} />}
@@ -275,6 +275,10 @@ function Dashboard() {
               <h2 className="text-center text-xl mb-4">Amount by Method</h2>
               {amountBarInView && <Bar data={amountByMethodData} height={250} />}
             </div>
+          </div> */}
+          <div className="w-[250px]" ref={amountBarRef}>
+              <h2 className="text-center text-xl mb-4">Amount by Method</h2>
+              {amountBarInView && <Bar data={amountByMethodData} height={250} />}
           </div>
 
         </div>
